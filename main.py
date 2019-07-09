@@ -13,6 +13,7 @@ def index():
     username_error = ''
     password_error = ''
     verify_password_error = ''
+    verified_password_error = ''
     email_error = ''
     title = 'Signup'
 
@@ -26,6 +27,7 @@ def index():
         escaped_verify_password = cgi.escape(verify_password)
         email = request.form['email']
         escaped_email = cgi.escape(email)
+
 
         for i in escaped_username:
             #if there is a blank space in username, it's invalid
@@ -51,19 +53,22 @@ def index():
         if not len(escaped_password):
             password_error = 'Not a valid password'
 
-        if escaped_password != escaped_verify_password:
-            verify_password_error = 'Passwords do not match.'
+        if not len(verify_password):
+            verify_password_error = 'Not a valid password'
+
+        if escaped_verify_password != escaped_verify_password:
+            verified_password_error = 'Passwords do not match.'
 
         if (escaped_email != '') and (not re.match('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)):
             email_error = 'Not a valid email'
             email = ''
 
-        if (not username_error) and (not password_error) and (not verify_password_error) and (not email_error):
+        if (not username_error) and (not password_error) and (not verify_password_error) and (not verified_password_error) and (not email_error):
             return redirect('/welcome?username={0}'.format(username))
 
     return render_template('signup.html', title=title, username=username, email=email,
                            username_error=username_error, password_error=password_error,
-                           verify_password_error=verify_password_error, email_error=email_error)
+                           verify_password_error=verify_password_error, verified_password_error=verified_password_error, email_error=email_error)
 
 
 @app.route('/welcome')
